@@ -1,0 +1,61 @@
+# Entornos virtuales
+venv/
+.env/
+.venv/
+
+# Archivos de entorno
+.env
+*.env
+
+# Bytecode de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos temporales / cachés
+*.log
+*.pot
+*.pyc
+.DS_Store
+Thumbs.db
+*.sqlite3
+*.db
+.cache/
+*.swp
+*.swo
+*.bak
+
+# Carpetas del editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Distribución / paquetes
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Archivos de testing
+htmlcov/
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+
+# Docker y otros
+docker-compose.override.yml
+*.pid
+
+# Documentación
+_site/
+*.pdf
+
+# Node.js (por si usas frontend en el mismo repo)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Otros
+*.zip
