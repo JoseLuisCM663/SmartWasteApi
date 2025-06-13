@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from app.database import engine, Base
 from app.routes import usuarios
 from app.models.usuarios import Usuario
-
+from app.models.ruta_recoleccion import RutaRecoleccion
+from app.models.usuario_ruta import UsuarioRuta
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
