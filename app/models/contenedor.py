@@ -5,7 +5,7 @@ from app.database import Base
 
 class Contenedor(Base):
     __tablename__ = 'tbb_contenedores'
-    ID = Column(Integer, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True, index=True)
     Ubicacion = Column(String(255), nullable=False)  # Ubicación del contenedor
     Capacidad = Column(Integer, nullable=False)  # Capacidad del contenedor en litros
     Ruta_Id = Column(Integer, ForeignKey("tbb_rutas_recoleccion.ID"))

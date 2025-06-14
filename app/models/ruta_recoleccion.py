@@ -4,7 +4,7 @@ from app.database import Base
 
 class RutaRecoleccion(Base):
     __tablename__ = 'tbb_rutas_recoleccion'
-    ID = Column(Integer, primary_key=True)
+    ID = Column(Integer, primary_key=True,autoincrement=True, index=True)
     Nombre = Column(String(100), nullable=False)
     Descripcion = Column(String(255), nullable=True)
     Fecha_Registro = Column(DateTime, nullable=False)

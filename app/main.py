@@ -5,6 +5,10 @@ from app.models.usuarios import Usuario
 from app.models.ruta_recoleccion import RutaRecoleccion
 from app.models.usuario_ruta import UsuarioRuta
 from app.models.contenedor import Contenedor
+from app.models.sensor import Sensor
+from app.models.lectura_sensor import LecturaSensor
+from app.models.bitacora_recolecion import BitacoraRecoleccion
+from app.models.bitacora_contenedor import BitacoraContenedor
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
