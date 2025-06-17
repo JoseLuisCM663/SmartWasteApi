@@ -8,4 +8,4 @@ class LecturaSensor(Base):
     Valor = Column(Float)
     Fecha = Column(DateTime)
     Sensor_Id = Column(Integer, ForeignKey("tbb_sensores.ID"), nullable=False)
-    Sensor = relationship("Sensor", back_populates="lecturas")
+

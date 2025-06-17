@@ -10,6 +10,5 @@ class RutaRecoleccion(Base):
     Fecha_Registro = Column(DateTime, nullable=False)
     Fecha_Actualizacion = Column(DateTime, nullable=True)
     Estatus = Column(Boolean, default=True)
-    Usuarios = relationship("User", secondary="usuario_ruta", back_populates="rutas")
-    Contenedores = relationship("Contenedor", back_populates="ruta")
-    Historiales = relationship("HistorialRecoleccion", back_populates="ruta")
+
+

@@ -7,5 +7,4 @@ class BitacoraRecoleccion(Base):
     ID = Column(Integer, primary_key=True)
     Fecha = Column(DateTime)
     Ruta_Id = Column(Integer, ForeignKey("tbb_rutas_recoleccion.ID"))
-    Ruta = relationship("RutaRecoleccion", back_populates="Bitacoras")
-    Contenedores = relationship("HistorialContenedor", back_populates="Bitacoras")
+

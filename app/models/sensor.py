@@ -12,5 +12,4 @@ class Sensor(Base):
     Fecha_Registro = Column(DateTime, nullable=False)
     Fecha_Actualizacion = Column(DateTime, nullable=True)
     Contenedor_Id = Column(Integer, ForeignKey("tbb_contenedores.ID"), nullable=False)
-    Contenedor = relationship("Contenedor", back_populates="sensor")
-    Lecturas = relationship("LecturaSensor", back_populates="sensor")
+

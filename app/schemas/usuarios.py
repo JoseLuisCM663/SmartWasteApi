@@ -18,11 +18,11 @@ class UsuarioBase(BaseModel):
 
 class UsuarioCreate(UsuarioBase):
     Contrasena: str
-    Estatus: Optional[str] = "Activo"  # Valor por defecto
+    Estatus: bool = True  # Valor por defecto
 
 class UsuarioResponse(UsuarioBase):
     ID: int
-    Estatus: str
+    Estatus: bool
     Fecha_Registro: datetime
     Fecha_Actualizacion: datetime
 

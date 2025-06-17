@@ -5,7 +5,7 @@ from datetime import datetime
 class ContenedorBase(BaseModel):
     Ubicacion: str
     Capacidad: int
-    Ruta_Id: int
+    Ruta_Id: Optional[int] = None
     Descripcion: Optional[str] = None
     Estatus: Optional[bool] = True
 
@@ -20,10 +20,10 @@ class ContenedorUpdate(BaseModel):
     Estatus: Optional[bool]
     Fecha_Actualizacion: Optional[datetime]
 
-class ContenedorOut(ContenedorBase):
+class ContenedorResponse(ContenedorBase):
     ID: int
     Fecha_Registro: datetime
     Fecha_Actualizacion: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

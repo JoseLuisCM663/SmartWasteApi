@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from app.database import engine, Base
+from app.routes import contenedor
 from app.routes import usuarios
 from app.models.usuarios import Usuario
 from app.models.ruta_recoleccion import RutaRecoleccion
 from app.models.usuario_ruta import UsuarioRuta
-from app.models.contenedor import Contenedor
+from app.models.contenedor import Contenedores
 from app.models.sensor import Sensor
 from app.models.lectura_sensor import LecturaSensor
 from app.models.bitacora_recolecion import BitacoraRecoleccion
@@ -21,12 +22,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Incluir routers existentes
-app.include_router(usuarios.router, prefix="/api/usuarios", tags=["Usuarios"])
+app.include_router(usuarios.router, prefix="/api/usuarios")
+app.include_router(contenedor.router_contenedor, prefix="/api/contenedores")
 
 
 # Crear las tablas automáticamente al arrancar la aplicación
 @app.on_event("startup")
 def crear_tablas():
     Base.metadata.create_all(bind=engine)
+
 

@@ -6,5 +6,7 @@ class BitacoraContenedor(Base):
     __tablename__ = 'tbd_bitacora_contenedor'
     Bitacora_Id = Column(Integer, ForeignKey("tbd_bitacora_recoleccion.ID"), primary_key=True)
     Contenedor_Id = Column(Integer, ForeignKey("tbb_contenedores.ID"), primary_key=True)
-    Bitacora = relationship("BitacoraRecoleccion", back_populates="contenedores")
-    contenedor = relationship("Contenedor", back_populates="Bitacoras")
+
+
+
+
