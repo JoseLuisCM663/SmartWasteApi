@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from app.database import engine, Base
 from app.routes import contenedor
 from app.routes import usuarios
+from app.routes import ruta_recolecion
+from app.routes import sensor
 from app.models.usuarios import Usuario
 from app.models.ruta_recoleccion import RutaRecoleccion
 from app.models.usuario_ruta import UsuarioRuta
@@ -26,6 +28,8 @@ app.add_middleware(
 # Incluir routers existentes
 app.include_router(usuarios.router, prefix="/api/usuarios")
 app.include_router(contenedor.router_contenedor, prefix="/api/contenedores")
+app.include_router(ruta_recolecion.router_ruta, prefix="/api/rutas_recoleccion")
+app.include_router(sensor.router_sensor, prefix="/api/sensores")
 
 
 # Crear las tablas automáticamente al arrancar la aplicación

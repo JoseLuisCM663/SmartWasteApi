@@ -11,5 +11,5 @@ class Sensor(Base):
     Estatus = Column(Boolean, default=True)
     Fecha_Registro = Column(DateTime, nullable=False)
     Fecha_Actualizacion = Column(DateTime, nullable=True)
-    Contenedor_Id = Column(Integer, ForeignKey("tbb_contenedores.ID"), nullable=False)
+    Contenedor_Id = Column(Integer, ForeignKey("tbb_contenedores.ID"), nullable=True)
 
