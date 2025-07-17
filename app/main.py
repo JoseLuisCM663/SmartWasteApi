@@ -5,6 +5,7 @@ from app.routes import usuarios
 from app.routes import ruta_recolecion
 from app.routes import sensor
 from app.routes import lectura_sensor
+from app.routes import usuario_ruta
 from app.models.usuarios import Usuario
 from app.models.ruta_recoleccion import RutaRecoleccion
 from app.models.usuario_ruta import UsuarioRuta
@@ -32,6 +33,7 @@ app.include_router(contenedor.router_contenedor, prefix="/api/contenedores")
 app.include_router(ruta_recolecion.router_ruta, prefix="/api/rutas_recoleccion")
 app.include_router(sensor.router_sensor, prefix="/api/sensores")
 app.include_router(lectura_sensor.router_lectura_sensor, prefix="/api/lecturas_sensor")
+app.include_router(usuario_ruta.router_usuario_ruta, prefix="/api/usuario_ruta")
 
 # Crear las tablas automáticamente al arrancar la aplicación
 @app.on_event("startup")
