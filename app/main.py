@@ -6,6 +6,7 @@ from app.routes import ruta_recolecion
 from app.routes import sensor
 from app.routes import lectura_sensor
 from app.routes import usuario_ruta
+from app.routes import seeder
 from app.models.usuarios import Usuario
 from app.models.ruta_recoleccion import RutaRecoleccion
 from app.models.usuario_ruta import UsuarioRuta
@@ -34,10 +35,15 @@ app.include_router(ruta_recolecion.router_ruta, prefix="/api/rutas_recoleccion")
 app.include_router(sensor.router_sensor, prefix="/api/sensores")
 app.include_router(lectura_sensor.router_lectura_sensor, prefix="/api/lecturas_sensor")
 app.include_router(usuario_ruta.router_usuario_ruta, prefix="/api/usuario_ruta")
+app.include_router(seeder.router_seeder, prefix="/api")
 
 # Crear las tablas automáticamente al arrancar la aplicación
 @app.on_event("startup")
 def crear_tablas():
     Base.metadata.create_all(bind=engine)
 
+# Crear datos de prueba al arrancar la aplicación
 
+# @app.on_event("startup")
+# def crear_datos_prueba():
+#     seeder.crear_seed()
