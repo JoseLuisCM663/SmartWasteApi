@@ -1,3 +1,11 @@
+"""
+Generador de lecturas para sensores.
+
+Uso:
+    from crud.seeder import generar_lecturas_sensor
+    generar_lecturas_sensor(sensor_id=1, cantidad=100, valor_min=10, valor_max=90)
+"""
+
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from app.models.lectura_sensor import LecturaSensor

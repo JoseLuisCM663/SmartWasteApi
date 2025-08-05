@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.sensor import Sensor
-from app.crud.seeder import generar_lecturas_sensor
+from app.crud.seder import generar_lecturas_sensor
 from datetime import datetime, timedelta
 import random
 

@@ -6,44 +6,43 @@ from app.routes import ruta_recolecion
 from app.routes import sensor
 from app.routes import lectura_sensor
 from app.routes import usuario_ruta
-from app.routes import seeder
-from app.models.usuarios import Usuario
-from app.models.ruta_recoleccion import RutaRecoleccion
-from app.models.usuario_ruta import UsuarioRuta
-from app.models.contenedor import Contenedores
-from app.models.sensor import Sensor
-from app.models.lectura_sensor import LecturaSensor
-from app.models.bitacora_recolecion import BitacoraRecoleccion
-from app.models.bitacora_contenedor import BitacoraContenedor
+from app.routes import seder
+from app.models import bitacora_contenedor
+from app.models import bitacora_recolecion
+from app.config.seeder import crear_seed  # ✅ Importación del seeder
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080"],  # permite solo ese origen
+    allow_origins=["http://localhost:8080"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-# Incluir routers existentes
+# Incluir routers
 app.include_router(usuarios.router, prefix="/api/usuarios")
 app.include_router(contenedor.router_contenedor, prefix="/api/contenedores")
 app.include_router(ruta_recolecion.router_ruta, prefix="/api/rutas_recoleccion")
 app.include_router(sensor.router_sensor, prefix="/api/sensores")
 app.include_router(lectura_sensor.router_lectura_sensor, prefix="/api/lecturas_sensor")
 app.include_router(usuario_ruta.router_usuario_ruta, prefix="/api/usuario_ruta")
-app.include_router(seeder.router_seeder, prefix="/api")
+app.include_router(seder.router_seeder, prefix="/api")
 
-# Crear las tablas automáticamente al arrancar la aplicación
+# Crear tablas
 @app.on_event("startup")
 def crear_tablas():
     Base.metadata.create_all(bind=engine)
 
-# Crear datos de prueba al arrancar la aplicación
-
-# @app.on_event("startup")
-# def crear_datos_prueba():
-#     seeder.crear_seed()
+# Ejecutar seeder automáticamente al iniciar la app
+@app.on_event("startup")
+def ejecutar_seeder():
+    crear_seed(
+        n_usuarios=3,
+        n_rutas=4,
+        n_contenedores=5,
+        n_sensores=10,
+        seed=42
+    )
