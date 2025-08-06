@@ -18,6 +18,9 @@ from app.models.usuarios import Usuario, TipoUsuario
 from app.models.ruta_recoleccion import RutaRecoleccion
 from app.models.contenedor import Contenedores
 from app.models.sensor import Sensor
+from app.models.lectura_sensor import LecturaSensor
+from app.models.bitacora_contenedor import BitacoraContenedor
+from app.models.bitacora_recolecion import BitacoraRecoleccion
 import bcrypt
 import random
 import argparse
@@ -35,11 +38,16 @@ def crear_seed(n_usuarios, n_rutas, n_contenedores, n_sensores, seed=None):
 
     try:
         # Limpieza previa
+        db.query(LecturaSensor).delete()
+        db.query(BitacoraContenedor).delete()
+        db.query(BitacoraRecoleccion).delete()
         db.query(Sensor).delete()
         db.query(Contenedores).delete()
         db.query(RutaRecoleccion).delete()
         db.query(Usuario).delete()
+
         db.commit()
+
 
         # 1. Usuarios
         tipos = [TipoUsuario.ADMIN, TipoUsuario.USUARIO, TipoUsuario.CHOFER]
