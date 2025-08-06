@@ -126,5 +126,87 @@ app/
 ```
 
 ---
+#  Seeder de Datos
+
+Este repositorio incluye scripts para poblar la base de datos de **SmartWasteAPI** con datos de prueba.
+
+---
+
+## 🚀 Funcionalidades incluidas
+
+### 1. Seeder principal (`config/seeder.py`)
+
+Este script inserta datos iniciales en las siguientes tablas:
+
+- ✅ **Usuarios** (Admin, Usuario, Chofer)
+- ✅ **Rutas** de recolección
+- ✅ **Contenedores** (asociados a rutas)
+- ✅ **Sensores** (asociados a contenedores)
+- ✅ **Relación Usuario-Ruta**
+
+#### ▶️ Uso
+
+```bash
+python config/seeder.py --usuarios 3 --rutas 2 --contenedores 2 --sensores 2 --seed 42
+```
+
+#### 📌 Argumentos
+
+| Parámetro        | Descripción                               | Valor por defecto |
+|------------------|--------------------------------------------|-------------------|
+| `--usuarios`     | Número de usuarios a crear                 | 3                 |
+| `--rutas`        | Número de rutas                            | 2                 |
+| `--contenedores` | Número de contenedores                     | 2                 |
+| `--sensores`     | Número de sensores                         | 2                 |
+| `--seed`         | Semilla para datos aleatorios reproducibles | Opcional          |
+
+---
+
+### 2. Generador de Lecturas de Sensor
+
+Genera lecturas simuladas para sensores.
+
+#### 🧪 Uso
+
+```python
+from crud.seeder import generar_lecturas_sensor
+
+generar_lecturas_sensor(sensor_id=1, cantidad=100, valor_min=10, valor_max=90)
+```
+
+#### 🔧 Parámetros
+
+- `sensor_id`: ID del sensor a asociar las lecturas
+- `cantidad`: Número de lecturas a generar
+- `valor_min`: Valor mínimo de lectura
+- `valor_max`: Valor máximo de lectura
+- `intervalo_minutos`: (opcional) intervalo entre lecturas
+
+---
+
+### 3. Generador de Bitácoras de Recolección
+
+Inserta bitácoras con datos asociados a rutas y contenedores.
+
+#### 🧾 Uso
+
+```python
+from crud.seeder import poblar_bitacoras
+from app.database import SessionLocal
+
+db = SessionLocal()
+poblar_bitacoras(db, cantidad=10)
+```
+
+---
+
+## 🗂 Estructura de Carpetas
+
+```
+config/
+  └── seeder.py           # Seeder principal
+crud/
+  └── seeder.py           # Funciones de utilidad (lecturas, bitácoras)
+```
 
 **Desarrollado por José Luis Campos Márquez**

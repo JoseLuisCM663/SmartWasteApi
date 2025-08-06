@@ -21,6 +21,8 @@ from app.models.sensor import Sensor
 from app.models.lectura_sensor import LecturaSensor
 from app.models.bitacora_contenedor import BitacoraContenedor
 from app.models.bitacora_recolecion import BitacoraRecoleccion
+from app.models.usuario_ruta import UsuarioRuta
+
 import bcrypt
 import random
 import argparse
@@ -43,6 +45,7 @@ def crear_seed(n_usuarios, n_rutas, n_contenedores, n_sensores, seed=None):
         db.query(BitacoraRecoleccion).delete()
         db.query(Sensor).delete()
         db.query(Contenedores).delete()
+        db.query(UsuarioRuta).delete()
         db.query(RutaRecoleccion).delete()
         db.query(Usuario).delete()
 
@@ -78,6 +81,24 @@ def crear_seed(n_usuarios, n_rutas, n_contenedores, n_sensores, seed=None):
             ))
         db.add_all(rutas)
         db.commit()
+
+        # 2.1 Relación Usuario - Ruta
+        usuarios_existentes = db.query(Usuario).all()
+        rutas_existentes = db.query(RutaRecoleccion).all()
+
+        relaciones_usuarios_rutas = []
+        for usuario in usuarios_existentes:
+            ruta_asignada = random.choice(rutas_existentes)
+            relaciones_usuarios_rutas.append(UsuarioRuta(
+                Usuario_Id=usuario.ID,
+                Ruta_Id=ruta_asignada.ID,
+                Fecha_Registro=datetime.now(),
+                Fecha_Actualizacion=datetime.now(),
+                Estatus=True
+            ))
+        db.add_all(relaciones_usuarios_rutas)
+        db.commit()
+
 
         # 3. Contenedores
 

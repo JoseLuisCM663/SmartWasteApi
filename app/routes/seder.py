@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.sensor import Sensor
-from app.crud.seder import generar_lecturas_sensor
+from app.crud.seder import generar_lecturas_sensor, poblar_bitacoras
 from datetime import datetime, timedelta
 import random
 
@@ -34,3 +34,21 @@ def endpoint_generar_lecturas(
         return {"mensaje": f"{cantidad} lecturas generadas para el sensor {sensor_id}"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router_seeder.post("/bitacoras/")
+def endpoint_generar_bitacoras(
+    cantidad: int = 5,
+    db: Session = Depends(get_db)
+):
+    """
+    Genera bitácoras de recolección y sus relaciones con contenedores.
+
+    Parámetros:
+    - cantidad: número de bitácoras de recolección a generar.
+    """
+    try:
+        poblar_bitacoras(db=db, cantidad=cantidad)
+        return {"mensaje": f"{cantidad} bitácoras generadas con éxito."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al poblar bitácoras: {str(e)}")

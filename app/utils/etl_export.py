@@ -2,6 +2,8 @@ import pandas as pd
 from sqlalchemy.orm import Session
 from app.models.lectura_sensor import LecturaSensor
 import numpy as np
+from app.models.bitacora_recolecion import BitacoraRecoleccion
+from app.models.bitacora_contenedor import BitacoraContenedor
 
 
 def exportar_lecturas_sensor(sensor_id: int, ruta_csv: str, db: Session):
@@ -62,3 +64,55 @@ def exportar_lecturas_sensor(sensor_id: int, ruta_csv: str, db: Session):
 
     except Exception as e:
         print(f"Error en ETL de exportación: {e}")
+
+
+def etl_bitacoras(db: Session):
+    try:
+        # Extracción
+        recolecciones = db.query(BitacoraRecoleccion).all()
+        contenedores = db.query(BitacoraContenedor).all()
+
+        # Transformación y limpieza
+        data_recoleccion = []
+        for r in recolecciones:
+            if r.Fecha_Registro is None or r.Ruta_Id is None:
+                continue  # Excluir nulos importantes
+
+            duracion = r.Tiempo_Duracion if r.Tiempo_Duracion and r.Tiempo_Duracion <= 500 else None
+            data_recoleccion.append({
+                "ID": r.ID,
+                "Fecha_Registro": r.Fecha_Registro.strftime("%Y-%m-%d %H:%M:%S"),
+                "Ruta_Id": r.Ruta_Id,
+                "Observaciones": r.Observaciones or "Sin observaciones",
+                "Tiempo_Duracion": duracion,
+                "Cantidad_Contenedores": r.Cantidad_Contenedores or 0
+            })
+
+        data_contenedor = []
+        for c in contenedores:
+            if c.Fecha_Registro is None or c.Contenedor_Id is None:
+                continue
+
+            porcentaje = c.Porcentaje_Llenado
+            if porcentaje is not None and (porcentaje < 0 or porcentaje > 100):
+                continue  # Valor atípico
+
+            data_contenedor.append({
+                "Bitacora_Id": c.Bitacora_Id,
+                "Contenedor_Id": c.Contenedor_Id,
+                "Fecha_Registro": c.Fecha_Registro.strftime("%Y-%m-%d %H:%M:%S"),
+                "Estado_Contenedor": c.Estado_Contenedor or "Desconocido",
+                "Porcentaje_Llenado": porcentaje,
+                "Recolectado": c.Recolectado
+            })
+
+        # Carga: retornar DataFrames o guardarlos como CSV para análisis
+        df_recoleccion = pd.DataFrame(data_recoleccion)
+        df_contenedor = pd.DataFrame(data_contenedor)
+
+        print(" ETL de bitácoras completado.")
+        return df_recoleccion, df_contenedor
+
+    except Exception as e:
+        print(f" Error en ETL: {e}")
+        return None, None
