@@ -38,6 +38,7 @@ dist/
 pip-wheel-metadata/
 datos/*.csv
 datos/*.zip
+datos/*.pdf
 
 # Archivos de testing
 htmlcov/
