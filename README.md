@@ -410,6 +410,102 @@ resultado = ml_model.predecir_ruta_por_bitacora(bitacora_id, db)
 Después de incluir el router, se pueden usar los endpoints `/ml/entrenar/` y `/ml/predecir/`.
 
 ---
+# Modelo de Análisis No Supervisado (ML)
+
+## Objetivo
+
+Implementar un **modelo de análisis no supervisado** sobre los datos de lecturas de sensores para identificar patrones o agrupaciones naturales. En este proyecto se utilizó **K-Means Clustering** como técnica principal.
+
+---
+
+## Metodología
+
+1. **Preparación de datos**
+
+   * Se utiliza el CSV generado previamente con todas las lecturas de sensores (`lecturas_todos_sensores.csv`).
+   * Columnas consideradas: `Valor`, `Hora`, `DiaSemana`.
+   * Se transforma `DiaSemana` a valores numéricos (`0=Monday, 6=Sunday`).
+   * Se escalan las variables usando `StandardScaler` para que todas tengan la misma importancia en el clustering.
+
+2. **Entrenamiento del modelo**
+
+   * Se utiliza `KMeans` de `sklearn` con número de clusters configurable (`n_clusters`).
+   * El modelo se ajusta a los datos escalados y se asigna un cluster a cada lectura.
+   * El modelo entrenado se guarda en: `datos/modelos/kmeans_model.pkl`.
+
+3. **Generación de informe**
+
+   * Se genera un **PDF** que incluye:
+
+     * Silhouette Score para evaluar la calidad del clustering.
+     * Gráficos 2D de:
+
+       * Valor vs Hora
+       * Valor vs Día de la semana
+     * Tabla con los promedios de cada variable por cluster.
+     * Interpretación automática en texto para cada cluster, explicando sus características de manera comprensible para un usuario común.
+
+---
+
+## Métricas utilizadas
+
+* **Silhouette Score**: Indica qué tan separados y compactos están los clusters.
+
+  * Valor cercano a 1: clusters bien definidos.
+  * Valor cercano a 0: clusters solapados o poco definidos.
+  * Valor negativo: posibles errores en la asignación de clusters.
+
+* **Estadísticas por cluster**:
+
+  * Cantidad de lecturas por cluster.
+  * Promedio de `Valor`, `Hora` y `DiaSemana_num` por cluster.
+
+---
+
+## Interpretación
+
+Cada cluster representa un **patrón de comportamiento de lecturas**. Por ejemplo:
+
+* Cluster 0: lecturas con valores altos en horas pico.
+* Cluster 1: lecturas bajas en días específicos de la semana.
+* Cluster 2: lecturas promedio distribuidas de manera uniforme.
+
+> Nota: La interpretación se genera automáticamente en el PDF para facilitar su comprensión por cualquier usuario.
+
+---
+
+## Archivos generados
+
+* Modelo entrenado: `datos/modelos/kmeans_model.pkl`
+* Informe PDF: `datos/informe_clusters.pdf`
+
+---
+
+## Uso en FastAPI
+
+Existen endpoints para entrenar el modelo y descargar el PDF:
+
+1. **Entrenar modelo y generar PDF**
+
+```
+GET /ml_unsupervised/entrenar/?n_clusters=3
+```
+
+2. **Descargar PDF**
+
+```
+GET /ml_unsupervised/descargar-informe/
+```
+
+---
+
+## Bibliotecas utilizadas
+
+* `pandas`
+* `matplotlib`
+* `sklearn` (`KMeans`, `StandardScaler`, `silhouette_score`)
+* `joblib`
+* `reportlab`
 
 **Proyecto:** SmartWasteApi
 
