@@ -209,4 +209,131 @@ crud/
   └── seeder.py           # Funciones de utilidad (lecturas, bitácoras)
 ```
 
-**Desarrollado por José Luis Campos Márquez**
+# Modelo de Análisis Supervisado (ML) - Clasificación de Rutas
+
+Este módulo implementa un **modelo supervisado** para clasificar rutas de recolección como **Eficientes** o **Ineficientes**, utilizando datos históricos de bitácoras de recolección y contenedores.
+
+---
+
+## Estructura de la API
+
+Se exponen los siguientes endpoints en FastAPI:
+
+### Entrenamiento del modelo
+
+```
+POST /ml/entrenar/
+```
+
+**Descripción:**
+Entrena un modelo de clasificación usando los CSV de bitácoras de recolección y contenedores.
+
+**Código de ejemplo:**
+
+```python
+resultado = ml_model.entrenar_modelo_bitacoras(
+    "datos/bitacora_recoleccion_etl.csv",
+    "datos/bitacora_contenedor_etl.csv"
+)
+```
+
+**Respuesta esperada:**
+
+```json
+{
+  "mensaje": "Modelo entrenado y guardado",
+  "accuracy": 0.85,
+  "f1_score": 0.84,
+  "reporte": "Classification report completo..."
+}
+```
+
+---
+
+### Predicción de rutas
+
+```
+GET /ml/predecir/?bitacora_id={id}
+```
+
+**Descripción:**
+Predice si una ruta de recolección (bitácora) es **Eficiente** o **Ineficiente**, usando los datos de BitacoraRecoleccion y BitacoraContenedor.
+
+**Código de ejemplo:**
+
+```python
+resultado = ml_model.predecir_ruta_por_bitacora(bitacora_id, db)
+```
+
+**Respuesta esperada:**
+
+```json
+{
+  "bitacora_id": 123,
+  "prediccion": "Eficiente",
+  "features": {
+    "Tiempo_Duracion": 90,
+    "Cantidad_Contenedores": 5,
+    "Porcentaje_Llenado": 0.85,
+    "Recolectado": 1.0
+  }
+}
+```
+
+---
+
+## Proceso de Entrenamiento
+
+1. **Carga de datos:** Se leen los archivos CSV de bitácoras de recolección y contenedores.
+2. **Preprocesamiento:**
+
+   * Conversión de fechas.
+   * Agregación de métricas por ruta: promedio de llenado y recolectado.
+3. **Definición de etiqueta (target):**
+
+   * `Eficiente` (1): `Tiempo_Duracion <= 100` y `Recolectado >= 0.8`
+   * `Ineficiente` (0): caso contrario
+4. **Selección de features:**
+
+   * `Tiempo_Duracion`
+   * `Cantidad_Contenedores`
+   * `Porcentaje_Llenado`
+   * `Recolectado`
+5. **Split Train/Test:** 70% entrenamiento, 30% prueba.
+6. **Modelo:** RandomForestClassifier con 100 estimadores.
+7. **Evaluación:**
+
+   * Accuracy
+   * F1-score
+   * Classification report
+8. **Guardado del modelo:** `datos/modelos/modelo_rutas.pkl`
+
+---
+
+## Métricas de Evaluación
+
+* **Accuracy:** Porcentaje de predicciones correctas sobre el total.
+* **F1-score:** Media armónica entre precisión y recall.
+* **Classification Report:** Desglose de precisión, recall y F1-score por clase.
+
+---
+
+## Dependencias
+
+* `pandas`
+* `numpy`
+* `scikit-learn`
+* `joblib`
+* `fastapi`
+* `sqlalchemy`
+
+---
+
+## Uso en FastAPI
+
+
+Después de incluir el router, se pueden usar los endpoints `/ml/entrenar/` y `/ml/predecir/`.
+
+---
+
+**Proyecto:** SmartWasteApi

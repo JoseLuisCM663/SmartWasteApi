@@ -8,12 +8,14 @@ from app.routes import lectura_sensor
 from app.routes import usuario_ruta
 from app.routes import seder
 from app.routes import etl_exportar
+from app.routes import ml
 from app.models import bitacora_contenedor
 from app.models import bitacora_recolecion
 from app.config.seeder import crear_seed  # ✅ Importación del seeder
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,12 +34,15 @@ app.include_router(lectura_sensor.router_lectura_sensor, prefix="/api/lecturas_s
 app.include_router(usuario_ruta.router_usuario_ruta, prefix="/api/usuario_ruta")
 app.include_router(seder.router_seeder, prefix="/api")
 app.include_router(etl_exportar.router_exportar, prefix="/api/exportar", tags=["Exportaciones"])
+app.include_router(ml.router_ml, prefix="/api/ml", tags=["Machine Learning"])
 
 # Crear tablas
 @app.on_event("startup")
 def crear_tablas():
     Base.metadata.create_all(bind=engine)
 
+
+'''
 # Ejecutar seeder automáticamente al iniciar la app
 @app.on_event("startup")
 def ejecutar_seeder():
@@ -48,3 +53,4 @@ def ejecutar_seeder():
         n_sensores=10,
         seed=42
     )
+'''
