@@ -208,7 +208,82 @@ config/
 crud/
   └── seeder.py           # Funciones de utilidad (lecturas, bitácoras)
 ```
+# 🧹 Preprocesamiento y Limpieza de Datos - SmartWasteApi
 
+Este módulo forma parte del backend de **SmartWasteApi**, encargado del **ETL (Extracción, Transformación y Carga)** de datos recolectados por sensores y bitácoras del sistema de gestión inteligente de residuos.
+
+## 📂 Funcionalidades implementadas
+
+### 1. `exportar_lecturas_sensor(sensor_id, ruta_csv, db)`
+
+Exporta las lecturas de un sensor específico a un archivo CSV, siguiendo los pasos del proceso ETL:
+
+- **Extracción:** Consultas a la base de datos con SQLAlchemy por `Sensor_Id`.
+- **Transformación:** Se aplican técnicas de:
+  - Conversión y ordenación temporal (`datetime`)
+  - Eliminación de duplicados
+  - Filtrado y clipping de valores (0-100)
+  - Resampleo a intervalos regulares (5 minutos)
+  - Interpolación lineal para valores faltantes
+  - Redondeo de valores
+  - Creación de variables adicionales: `Hora`, `Día de la semana`
+- **Carga:** Generación y guardado de un archivo `.csv` limpio y estructurado.
+
+### 2. `etl_bitacoras(db)`
+
+Realiza la limpieza y exportación de datos de dos tablas de bitácoras:
+
+- **Bitácora de Recolección:**
+  - Se excluyen registros sin fecha o ruta válida
+  - Se filtran valores atípicos en duración (>500)
+  - Se imputan valores por defecto para campos nulos (ej. observaciones)
+- **Bitácora de Contenedor:**
+  - Se validan fechas y IDs de contenedores
+  - Se eliminan valores de porcentaje de llenado fuera de rango (0-100)
+  - Se etiquetan estados desconocidos
+
+Retorna dos `DataFrames` limpios listos para análisis o exportación.
+
+## 🚀 Endpoints disponibles
+
+### `GET /exportar-sensor/?sensor_id=ID`
+
+- Ejecuta `exportar_lecturas_sensor`
+- Devuelve un archivo `.csv` limpio con las lecturas del sensor especificado
+
+### `GET /exportar-bitacoras/`
+
+- Ejecuta `etl_bitacoras`
+- Devuelve un archivo `.zip` con los siguientes CSVs:
+  - `bitacora_recoleccion_etl.csv`
+  - `bitacora_contenedor_etl.csv`
+
+## 📌 Ubicación del código
+
+- Lógica principal de ETL: `app/utils/etl_export.py`
+- Rutas de exportación: `app/routers/exportar.py`
+
+## 🛠 Requisitos
+
+- Pandas
+- Numpy
+- SQLAlchemy
+- FastAPI
+- Zipfile (módulo estándar de Python)
+
+## 📁 Ejemplo de uso
+
+```bash
+curl -X GET "http://localhost:8000/exportar-sensor/?sensor_id=1" -o lecturas_sensor_1.csv
+
+curl -X GET "http://localhost:8000/exportar-bitacoras/" -o bitacoras_etl.zip
+```
+
+## 📈 Objetivo del módulo
+
+Garantizar datos limpios, consistentes y listos para análisis de comportamiento, modelos predictivos o visualizaciones, reduciendo errores por datos atípicos o faltantes.
+
+---
 # Modelo de Análisis Supervisado (ML) - Clasificación de Rutas
 
 Este módulo implementa un **modelo supervisado** para clasificar rutas de recolección como **Eficientes** o **Ineficientes**, utilizando datos históricos de bitácoras de recolección y contenedores.
@@ -337,3 +412,4 @@ Después de incluir el router, se pueden usar los endpoints `/ml/entrenar/` y `/
 ---
 
 **Proyecto:** SmartWasteApi
+
