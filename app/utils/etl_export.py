@@ -6,64 +6,65 @@ from app.models.bitacora_recolecion import BitacoraRecoleccion
 from app.models.bitacora_contenedor import BitacoraContenedor
 
 
-def exportar_lecturas_sensor(sensor_id: int, ruta_csv: str, db: Session):
+def exportar_todas_lecturas(ruta_csv: str, db: Session):
     """
-    ETL completo de lecturas:
+    ETL completo de lecturas de TODOS los sensores:
     - Extrae de la BD
-    - Transforma: limpia, interpola, resamplea, crea features
+    - Transforma: limpieza, interpolación, resampleo por sensor, features
     - Carga a CSV
     """
+
     try:
         # 1) EXTRACCIÓN
-        lecturas = db.query(LecturaSensor) \
-                     .filter(LecturaSensor.Sensor_Id == sensor_id) \
-                     .all()
+        lecturas = db.query(LecturaSensor).all()
 
-        # Convertir a lista de dicts
+        # Convertir a DataFrame
         data = [{
             "ID": l.ID,
+            "Sensor_Id": l.Sensor_Id,
             "Valor": l.Valor,
             "Fecha": l.Fecha,
         } for l in lecturas]
 
         df = pd.DataFrame(data)
 
-        # 2) TRANSFORMACIÓN
+        if df.empty:
+            print("No hay lecturas para exportar.")
+            return
 
-        # a) Conversión Fecha a datetime y orden
+        # 2) TRANSFORMACIÓN Y LIMPIEZA
         df["Fecha"] = pd.to_datetime(df["Fecha"])
-        df = df.sort_values("Fecha")
-
-        # b) Eliminación de duplicados
-        df = df.drop_duplicates(subset=["Fecha"], keep="first")
-
-        # c) Filtrado de valores válidos y clip
+        df = df.sort_values(["Sensor_Id", "Fecha"])
+        df = df.drop_duplicates(subset=["ID"], keep="first")
         df = df[df["Valor"].notna()]
         df["Valor"] = df["Valor"].clip(lower=0, upper=100)
-
-        # d) Resampleo e interpolación
-        #   • Índice temporal
         df = df.set_index("Fecha")
-        #   • Resamplear a cada 5 minutos (o el intervalo que uses)
-        df = df.resample("5T").mean()
-        #   • Imputar valores faltantes por interpolación lineal
-        df["Valor"] = df["Valor"].interpolate(method="time")
 
-        # e) Redondeo
-        df["Valor"] = df["Valor"].round(2)
+        # Resampleo e interpolación por sensor sin warnings
+        resampled_list = []
 
-        # f) Crear features adicionales
-        df["Hora"] = df.index.hour
-        df["DiaSemana"] = df.index.day_name()
+        for sensor_id, g in df.groupby("Sensor_Id"):
+            g_resampled = g[["Valor"]].resample("5min").mean().interpolate(method="time")
+            g_resampled["Sensor_Id"] = sensor_id
+            resampled_list.append(g_resampled)
+
+        df_resampled = pd.concat(resampled_list).reset_index()
+
+        # Redondeo de valores
+        df_resampled["Valor"] = df_resampled["Valor"].round(2)
+
+        # Crear features adicionales
+        df_resampled["Hora"] = df_resampled["Fecha"].dt.hour
+        df_resampled["DiaSemana"] = df_resampled["Fecha"].dt.day_name()
 
         # 3) CARGA
-        # Restaurar índice como columna
-        df = df.reset_index()
-        df.to_csv(ruta_csv, index=False)
-        print(f"CSV ETL exportado a {ruta_csv}")
+        df_resampled.to_csv(ruta_csv, index=False, encoding="utf-8")
+        print(f"CSV ETL exportado a {ruta_csv} con {len(df_resampled)} registros.")
 
     except Exception as e:
         print(f"Error en ETL de exportación: {e}")
+        raise RuntimeError(f"Error en ETL de exportación: {e}")
+
 
 
 def etl_bitacoras(db: Session):

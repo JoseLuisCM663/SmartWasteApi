@@ -2,32 +2,34 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.responses import FileResponse
 from app.database import get_db
-from app.utils.etl_export import exportar_lecturas_sensor, etl_bitacoras
+from app.utils.etl_export import exportar_todas_lecturas, etl_bitacoras
 import os
 import zipfile
 
 router_exportar = APIRouter()
 
-@router_exportar.get("/exportar-sensor/")
-def descargar_csv(sensor_id: int, db: Session = Depends(get_db)):
+@router_exportar.get("/exportar-todos/")
+def descargar_csv_todos(db: Session = Depends(get_db)):
     """
-    Exporta lecturas de un sensor a CSV limpio y lo devuelve como descarga.
+    Exporta lecturas de TODOS los sensores a un CSV limpio y lo devuelve como descarga.
+    Cumple con el ETL: extracción, transformación, limpieza, manejo de outliers y carga.
     """
     try:
         output_folder = "datos"
         os.makedirs(output_folder, exist_ok=True)
 
-        ruta_csv = f"{output_folder}/lecturas_sensor_{sensor_id}.csv"
-        exportar_lecturas_sensor(sensor_id, ruta_csv, db)
+        ruta_csv = f"{output_folder}/lecturas_todos_sensores.csv"
+        exportar_todas_lecturas(ruta_csv, db)
 
         return FileResponse(
             ruta_csv,
-            media_type='text/csv',
-            filename=f"lecturas_sensor_{sensor_id}.csv"
+            media_type="text/csv",
+            filename="lecturas_todos_sensores.csv"
         )
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router_exportar.get("/exportar-bitacoras/")
 def descargar_bitacoras_etl(db: Session = Depends(get_db)):

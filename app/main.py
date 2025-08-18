@@ -9,6 +9,7 @@ from app.routes import usuario_ruta
 from app.routes import seder
 from app.routes import etl_exportar
 from app.routes import ml
+from app.routes import ml_unsupervided
 from app.models import bitacora_contenedor
 from app.models import bitacora_recolecion
 from app.config.seeder import crear_seed  # ✅ Importación del seeder
@@ -35,6 +36,7 @@ app.include_router(usuario_ruta.router_usuario_ruta, prefix="/api/usuario_ruta")
 app.include_router(seder.router_seeder, prefix="/api")
 app.include_router(etl_exportar.router_exportar, prefix="/api/exportar", tags=["Exportaciones"])
 app.include_router(ml.router_ml, prefix="/api/ml", tags=["Machine Learning"])
+app.include_router(ml_unsupervided.router_ml, prefix="/api/ml_unsupervised", tags=["Machine Learning No Supervisado"])
 
 # Crear tablas
 @app.on_event("startup")
