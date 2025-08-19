@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 from app.crud import ml_unsupervised
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))  # SmartWasteApi/
-DATA_DIR = os.path.join(BASE_DIR, "datos")
+DATA_DIR = os.path.join(BASE_DIR, "public")
 MODELOS_DIR = os.path.join(DATA_DIR, "modelos")
 os.makedirs(MODELOS_DIR, exist_ok=True)
 

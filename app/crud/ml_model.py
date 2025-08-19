@@ -10,7 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 # Carpeta para guardar modelo
-MODEL_PATH = "datos/modelos/modelo_rutas.pkl"
+MODEL_PATH = "public/modelos/modelo_rutas.pkl"
 
 def entrenar_modelo_bitacoras(ruta_recoleccion_csv: str, ruta_contenedor_csv: str):
     """

@@ -10,10 +10,12 @@ from app.routes import seder
 from app.routes import etl_exportar
 from app.routes import ml
 from app.routes import ml_unsupervided
+from app.routes import dw_etl 
 from app.models import bitacora_contenedor
 from app.models import bitacora_recolecion
 from app.config.seeder import crear_seed  # ✅ Importación del seeder
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 app = FastAPI()
 
@@ -37,7 +39,7 @@ app.include_router(seder.router_seeder, prefix="/api")
 app.include_router(etl_exportar.router_exportar, prefix="/api/exportar", tags=["Exportaciones"])
 app.include_router(ml.router_ml, prefix="/api/ml", tags=["Machine Learning"])
 app.include_router(ml_unsupervided.router_ml, prefix="/api/ml_unsupervised", tags=["Machine Learning No Supervisado"])
-
+app.include_router(dw_etl.router_dw, prefix="/api/dw", tags=["Data Warehouse"])
 # Crear tablas
 @app.on_event("startup")
 def crear_tablas():
@@ -56,3 +58,13 @@ def ejecutar_seeder():
         seed=42
     )
 '''
+with engine.connect() as conn:
+    # Abrir el archivo en UTF-8
+    with open("app/utils/dw_schema.sql", "r", encoding="utf-8") as f:
+        sql_commands = f.read()
+    for command in sql_commands.split(";"):
+        if command.strip():
+            conn.execute(text(command))
+    conn.commit()
+
+print("✅ Tablas del DW creadas correctamente.")

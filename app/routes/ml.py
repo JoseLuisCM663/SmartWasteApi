@@ -16,8 +16,8 @@ def entrenar_modelo():
     """
     try:
         resultado = ml_model.entrenar_modelo_bitacoras(
-            "datos/bitacora_recoleccion_etl.csv",
-            "datos/bitacora_contenedor_etl.csv"
+            "public/bitacora_recoleccion_etl.csv",
+            "public/bitacora_contenedor_etl.csv"
         )
         if "error" in resultado:
             raise Exception(resultado["error"])

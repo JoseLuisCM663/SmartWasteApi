@@ -36,9 +36,9 @@ dist/
 *.egg-info/
 .eggs/
 pip-wheel-metadata/
-datos/*.csv
-datos/*.zip
-datos/*.pdf
+public/*.csv
+public/*.zip
+public/*.pdf
 
 # Archivos de testing
 htmlcov/

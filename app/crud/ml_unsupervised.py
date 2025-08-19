@@ -12,7 +12,7 @@ from reportlab.lib.utils import ImageReader
 
 # Definir rutas base
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))  # SmartWasteApi/
-DATA_DIR = os.path.join(BASE_DIR, "datos")
+DATA_DIR = os.path.join(BASE_DIR, "public")
 MODELOS_DIR = os.path.join(DATA_DIR, "modelos")
 os.makedirs(MODELOS_DIR, exist_ok=True)
 

@@ -307,8 +307,8 @@ Entrena un modelo de clasificación usando los CSV de bitácoras de recolección
 
 ```python
 resultado = ml_model.entrenar_modelo_bitacoras(
-    "datos/bitacora_recoleccion_etl.csv",
-    "datos/bitacora_contenedor_etl.csv"
+    "public/bitacora_recoleccion_etl.csv",
+    "public/bitacora_contenedor_etl.csv"
 )
 ```
 
@@ -381,7 +381,7 @@ resultado = ml_model.predecir_ruta_por_bitacora(bitacora_id, db)
    * Accuracy
    * F1-score
    * Classification report
-8. **Guardado del modelo:** `datos/modelos/modelo_rutas.pkl`
+8. **Guardado del modelo:** `public/modelos/modelo_rutas.pkl`
 
 ---
 
@@ -476,8 +476,8 @@ Cada cluster representa un **patrón de comportamiento de lecturas**. Por ejempl
 
 ## Archivos generados
 
-* Modelo entrenado: `datos/modelos/kmeans_model.pkl`
-* Informe PDF: `datos/informe_clusters.pdf`
+* Modelo entrenado: `public/modelos/kmeans_model.pkl`
+* Informe PDF: `public/informe_clusters.pdf`
 
 ---
 
@@ -506,6 +506,101 @@ GET /ml_unsupervised/descargar-informe/
 * `sklearn` (`KMeans`, `StandardScaler`, `silhouette_score`)
 * `joblib`
 * `reportlab`
+
+# 📊 Paso 4: Modelo de Data Warehouse
+---
+
+En esta fase se diseñó el **Modelo de Data Warehouse** del proyecto **SmartWasteApi**, siguiendo un **esquema en estrella** para facilitar la integración, consulta y análisis de la información histórica de las lecturas de los sensores de residuos.
+
+---
+
+## 🏗️ Esquema en Estrella
+
+El modelo se compone de una **tabla de hechos central** (`Fact_Lecturas`) y varias **tablas de dimensiones** relacionadas.  
+
+### 🔹 Tabla de Hechos: `Fact_Lecturas`
+Contiene los datos medibles del sistema, provenientes de las lecturas de los sensores.
+
+| Campo          | Tipo        | Descripción |
+|----------------|------------|-------------|
+| **Lectura_ID** | INT (PK)   | Identificador único de la lectura |
+| **Sensor_Id**  | INT (FK)   | Clave foránea hacia `Dim_Sensor` |
+| **Contenedor_Id** | INT (FK) | Clave foránea hacia `Dim_Contenedor` |
+| **Ruta_Id**    | INT (FK)   | Clave foránea hacia `Dim_Ruta` |
+| **Tiempo_ID**  | INT (FK)   | Clave foránea hacia `Dim_Tiempo` |
+| **Valor**      | FLOAT      | Medición registrada (nivel de llenado del contenedor en %) |
+
+---
+
+### 🔹 Dimensiones
+
+#### `Dim_Sensor`
+Información sobre los sensores que capturan las lecturas.
+
+| Campo       | Tipo        | Descripción |
+|-------------|------------|-------------|
+| **Sensor_Id** | INT (PK) | Identificador único del sensor |
+| Tipo        | VARCHAR    | Tipo de sensor (ultrasónico, presión, etc.) |
+| Modelo      | VARCHAR    | Modelo o referencia del fabricante |
+
+---
+
+#### `Dim_Contenedor`
+Describe los contenedores de residuos.
+
+| Campo             | Tipo        | Descripción |
+|-------------------|------------|-------------|
+| **Contenedor_Id** | INT (PK)   | Identificador único del contenedor |
+| Ubicacion         | VARCHAR    | Dirección o zona del contenedor |
+| Capacidad         | FLOAT      | Capacidad máxima en litros |
+
+---
+
+#### `Dim_Ruta`
+Información sobre las rutas de recolección.
+
+| Campo        | Tipo        | Descripción |
+|--------------|------------|-------------|
+| **Ruta_Id**  | INT (PK)   | Identificador único de la ruta |
+| Nombre       | VARCHAR    | Nombre de la ruta |
+| Descripción  | VARCHAR    | Observaciones adicionales |
+
+---
+
+#### `Dim_Tiempo`
+Dimensión temporal para análisis histórico.
+
+| Campo         | Tipo        | Descripción |
+|---------------|------------|-------------|
+| **Tiempo_ID** | INT (PK)   | Identificador único del tiempo |
+| Fecha         | DATE       | Fecha de la lectura |
+| Hora          | TIME       | Hora de la lectura |
+| Dia           | INT        | Día del mes |
+| Mes           | INT        | Mes |
+| Año           | INT        | Año |
+| DiaSemana     | VARCHAR    | Nombre del día (Lunes, Martes, etc.) |
+
+---
+
+## 📐 Jerarquías Definidas
+
+1. **Tiempo** → Año > Mes > Día > Hora  
+2. **Ruta** → Ruta > Contenedor > Sensor  
+
+Estas jerarquías permiten realizar análisis agregados por periodo, ubicación y dispositivo.
+
+---
+
+## 📑 Metadatos
+
+- **Grano del Data Warehouse**: Cada registro en `Fact_Lecturas` representa una **lectura puntual de un sensor en un contenedor en un instante de tiempo específico**.  
+- **Integración**: Las dimensiones se mantienen independientes para permitir la extensibilidad del modelo (por ejemplo, agregar nuevas rutas o sensores sin rediseñar el esquema).  
+- **Optimización**: El esquema en estrella se eligió por su simplicidad y eficiencia para consultas OLAP.  
+
+---
+
+✅ Con este modelo, el Data Warehouse soporta análisis de llenado de contenedores, eficiencia de rutas y comportamiento temporal de los residuos.
+
 
 **Proyecto:** SmartWasteApi
 

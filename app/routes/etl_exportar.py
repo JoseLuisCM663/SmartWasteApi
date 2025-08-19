@@ -15,7 +15,7 @@ def descargar_csv_todos(db: Session = Depends(get_db)):
     Cumple con el ETL: extracción, transformación, limpieza, manejo de outliers y carga.
     """
     try:
-        output_folder = "datos"
+        output_folder = "public"
         os.makedirs(output_folder, exist_ok=True)
 
         ruta_csv = f"{output_folder}/lecturas_todos_sensores.csv"
@@ -37,7 +37,7 @@ def descargar_bitacoras_etl(db: Session = Depends(get_db)):
     Ejecuta limpieza y exportación ETL de bitácoras, y devuelve archivos CSV en un ZIP.
     """
     try:
-        output_folder = "datos"
+        output_folder = "public"
         os.makedirs(output_folder, exist_ok=True)
 
         # Ejecuta ETL
