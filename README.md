@@ -507,7 +507,7 @@ GET /ml_unsupervised/descargar-informe/
 * `joblib`
 * `reportlab`
 
-# 📊 Paso 4: Modelo de Data Warehouse
+# 📊 Modelo de Data Warehouse
 ---
 
 En esta fase se diseñó el **Modelo de Data Warehouse** del proyecto **SmartWasteApi**, siguiendo un **esquema en estrella** para facilitar la integración, consulta y análisis de la información histórica de las lecturas de los sensores de residuos.
@@ -601,6 +601,76 @@ Estas jerarquías permiten realizar análisis agregados por periodo, ubicación 
 
 ✅ Con este modelo, el Data Warehouse soporta análisis de llenado de contenedores, eficiencia de rutas y comportamiento temporal de los residuos.
 
+# 📊 Visualización y Dashboard
+
+## 📝 Descripción
+En este módulo se implementó un **dashboard interactivo** utilizando **Streamlit** y **Plotly**, con el objetivo de analizar los datos de:
+- **Bitácora de Recolección**
+- **Bitácora de Contenedores**
+- **Lecturas de Sensores**
+
+La visualización permite al usuario explorar, comparar y detectar patrones clave en las operaciones del sistema de recolección de residuos inteligentes.
+
+---
+
+## 🎯 Objetivo
+- Facilitar el **análisis visual** de los datos recolectados.
+- Identificar **tendencias y anomalías** en los tiempos de recolección, llenado de contenedores y lecturas de sensores.
+- Apoyar la **toma de decisiones** en la planeación de rutas y mantenimiento de contenedores.
+
+---
+
+## ⚙️ Herramientas utilizadas
+- **Streamlit** → Framework para construir el dashboard interactivo.  
+- **Plotly Express** → Librería de visualización interactiva para gráficos dinámicos.  
+- **Pandas** → Manipulación y limpieza de datos antes de la visualización.  
+
+---
+
+## 📂 Estructura de Archivos
+dashboard/
+│── dashboard.py # Código principal del dashboard
+│── datos/
+├── bitacora_recoleccion_etl.csv
+├── bitacora_contenedor_etl.csv
+├── lecturas_todos_sensores.csv
+
+---
+
+## 📺 Visualizaciones Implementadas
+
+### 1. 📦 Bitácora de Contenedores
+- **Histograma del porcentaje de llenado** → distribuciones por rango.  
+- **Tendencias temporales** → evolución del llenado por fecha.  
+- **Boxplot por estado del contenedor** → identificación de outliers.  
+
+### 2. 🚛 Bitácora de Recolección
+- **Duración promedio de rutas** → análisis de eficiencia.  
+- **Cantidad de contenedores recolectados por ruta** → carga de trabajo.  
+- **Comparación de observaciones** → patrones de incidencias.  
+
+### 3. 📡 Lecturas de Sensores
+- **Serie temporal de valores por sensor** → evolución en el tiempo.  
+- **Promedios por día de la semana** → patrones de llenado según días.  
+- **Boxplot por hora del día** → valores atípicos y tendencias horarias.  
+
+---
+
+## 📖 Storytelling y Análisis Visual
+1. **Contenedores críticos** → Se observó que los contenedores dañados presentan valores extremos en porcentaje de llenado.  
+2. **Rutas eficientes vs. ineficientes** → Al comparar tiempos de duración y cantidad de contenedores, se identifican rutas más óptimas.  
+3. **Patrones semanales** → Los sensores muestran mayor porcentaje de llenado a inicios de semana (lunes y martes), lo que sugiere ajustar la planeación.  
+4. **Anomalías detectadas** → Boxplots de sensores ayudan a identificar lecturas fuera de rango (ej. > 100%), que corresponden a fallas o datos atípicos.  
+
+---
+
+## 🚀 Ejecución del Dashboard
+Para iniciar el dashboard localmente:
+```bash
+streamlit run dashboard/dashboard.py
+```
+Esto abrirá automáticamente en el navegador:
+👉 http://localhost:8501
 
 **Proyecto:** SmartWasteApi
 
