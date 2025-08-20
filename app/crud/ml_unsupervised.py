@@ -81,8 +81,8 @@ def generar_informe_pdf(df: pd.DataFrame, output_path: str):
         cluster_means = df.groupby("Cluster")[features].mean().round(2)
 
         # Gráficos 2D
-        tmp_img_path1 = os.path.join("datos", "temp_plot1.png")
-        tmp_img_path2 = os.path.join("datos", "temp_plot2.png")
+        tmp_img_path1 = os.path.join("public", "temp_plot1.png")
+        tmp_img_path2 = os.path.join("public", "temp_plot2.png")
 
         # Valor vs Hora
         plt.figure(figsize=(6,4))
