@@ -46,7 +46,7 @@ def crear_tablas():
     Base.metadata.create_all(bind=engine)
 
 
-'''
+
 # Ejecutar seeder automáticamente al iniciar la app
 @app.on_event("startup")
 def ejecutar_seeder():
@@ -57,7 +57,7 @@ def ejecutar_seeder():
         n_sensores=10,
         seed=42
     )
-'''
+
 with engine.connect() as conn:
     # Abrir el archivo en UTF-8
     with open("app/utils/dw_schema.sql", "r", encoding="utf-8") as f:
