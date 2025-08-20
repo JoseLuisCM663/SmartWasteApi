@@ -39,6 +39,7 @@ pip-wheel-metadata/
 public/*.csv
 public/*.zip
 public/*.pdf
+public/*.pkl
 
 # Archivos de testing
 htmlcov/
