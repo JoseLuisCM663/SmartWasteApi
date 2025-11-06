@@ -47,16 +47,7 @@ def crear_tablas():
 
 
 
-# Ejecutar seeder automáticamente al iniciar la app
-@app.on_event("startup")
-def ejecutar_seeder():
-    crear_seed(
-        n_usuarios=3,
-        n_rutas=4,
-        n_contenedores=5,
-        n_sensores=10,
-        seed=42
-    )
+
 
 with engine.connect() as conn:
     # Abrir el archivo en UTF-8
