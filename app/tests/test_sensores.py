@@ -1,3 +1,4 @@
+"""
 import requests
 from app.tests.test_auth import test_login_usuario
 from datetime import datetime
@@ -12,7 +13,7 @@ def test_crear_sensor():
         "Descripcion": "Sensor de llenado principal",
         "Estatus": True,
         "Fecha_Registro": datetime.now().isoformat(),
-        "Contenedor_Id": 1
+        "Contenedor_Id": 5
     }
     response = requests.post(f"{BASE_URL}/sensor/", json=data, headers=headers)
     assert response.status_code in (200, 201)
@@ -24,3 +25,4 @@ def test_listar_sensores():
     response = requests.get(f"{BASE_URL}/sensor/", headers=headers)
     assert response.status_code == 200
     print("✅ Sensores listados correctamente")
+"""

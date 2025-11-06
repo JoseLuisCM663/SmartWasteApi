@@ -10,7 +10,7 @@ from app.config.jwt import crear_token_acceso, obtener_usuario_actual, ACCESS_TO
 
 router = APIRouter() 
 
-@router.post("/registro/", response_model=UsuarioResponse)
+@router.post("/registro", response_model=UsuarioResponse)
 def registrar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     # Llamar a la función de la capa CRUD
     db_usuario = crear_usuario(db, usuario)
@@ -90,7 +90,7 @@ def eliminar_usuario_endpoint(
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return usuario
 
-@router.get("/usuarios/", response_model=list[UsuarioResponse])
+@router.get("/usuario/", response_model=list[UsuarioResponse])
 def obtener_usuarios_endpoint(
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(obtener_usuario_actual)  # Verifica que el usuario esté autenticado

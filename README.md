@@ -671,6 +671,13 @@ streamlit run dashboard/dashboard.py
 ```
 Esto abrirá automáticamente en el navegador:
 👉 http://localhost:8501
+ ---
+ ## pruevas de regresion
+Para iniciar pruebas en los endpoints principales ejecute:
+```bash
+python -m pytest -v --import-mode=importlib
+```
+
 
 **Proyecto:** SmartWasteApi
 
