@@ -22,7 +22,7 @@ def obtener_token():
     }
 
     # Intentar crear el usuario (si ya existe, la API devolverá 400 o 409)
-    crear_resp = requests.post(f"{USUARIOS_URL}/", json=user_data)
+    crear_resp = requests.post(f"{USUARIOS_URL}/registro", json=user_data)
     if crear_resp.status_code in (200, 201):
         print("👤 Usuario de prueba creado correctamente")
     else:
