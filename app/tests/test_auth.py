@@ -1,5 +1,6 @@
 # app/tests/test_auth.py
 import requests
+from datetime import datetime
 
 BASE_URL = "http://127.0.0.1:8000/api"
 USUARIOS_URL = f"{BASE_URL}/usuarios"
@@ -15,10 +16,13 @@ def obtener_token():
     # Datos del usuario de prueba
     user_data = {
         "Nombre_Usuario": "usuario_test",
+        "Tipo_Usuario": "Administrador",
         "Correo_Electronico": "donaldgarcia@example.net",
         "Contrasena": "admin123",
         "Numero_Telefonico_Movil": "1234567890",
-        "Estatus": True
+        "Estatus": True,
+        "Fecha_Registro": datetime.now().isoformat(),
+        "Fecha_Actualizacion": datetime.now().isoformat()
     }
 
     # Intentar crear el usuario (si ya existe, la API devolverá 400 o 409)
