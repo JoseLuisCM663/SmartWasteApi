@@ -13,8 +13,8 @@ import os
 load_dotenv()
 
 # Configuración de JWT
-SECRET_KEY = os.getenv("SECRET_KEY")  # Clave secreta para firmar el token
-ALGORITHM = os.getenv("ALGORITHM")
+SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey123") # Clave secreta para firmar el token
+ALGORITHM = os.getenv("ALGORITHM", "HS256") 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Duración del token
 
 # Esquema de seguridad para JWT
