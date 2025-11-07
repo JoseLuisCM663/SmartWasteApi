@@ -38,7 +38,7 @@ def obtener_token():
         "Contrasena": user_data["Contrasena"]
     }
     response = requests.post(LOGIN_URL, json=login_data)
-
+    print("imprimiendo response de login:", response.text)
     # Validar login exitoso
     assert response.status_code == 200, f"❌ Error al iniciar sesión: {response.text}"
 
