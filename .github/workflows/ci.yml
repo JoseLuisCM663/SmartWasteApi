@@ -11,18 +11,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout código
+      - name: 🧩 Checkout código
         uses: actions/checkout@v3
 
-      - name: Configurar Python
+      - name: 🐍 Configurar Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Instalar dependencias
+      - name: 📦 Instalar dependencias
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest requests
+          pip install pytest requests uvicorn
 
-      - name: Ejecutar pruebas
+      - name: 🚀 Iniciar servidor FastAPI
+        run: |
+          nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 &
+          sleep 5  # Espera 5 segundos para que el servidor se levante correctamente
+
+      - name: 🧪 Ejecutar pruebas automatizadas
         run: python -m pytest -v --import-mode=importlib
+
+      - name: ✅ Finalizar pipeline
+        if: success()
+        run: echo "✅ Todas las pruebas se ejecutaron correctamente en GitHub Actions."
