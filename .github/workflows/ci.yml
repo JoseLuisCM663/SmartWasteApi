@@ -25,4 +25,4 @@ jobs:
           pip install pytest requests
 
       - name: Ejecutar pruebas
-        run: pytest -v
+        run: python -m pytest -v --import-mode=importlib
