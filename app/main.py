@@ -16,9 +16,10 @@ from app.models import bitacora_recolecion
 from app.config.seeder import crear_seed  # ✅ Importación del seeder
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
+import os
+import uvicorn
 
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,22 +41,31 @@ app.include_router(etl_exportar.router_exportar, prefix="/api/exportar", tags=["
 app.include_router(ml.router_ml, prefix="/api/ml", tags=["Machine Learning"])
 app.include_router(ml_unsupervided.router_ml, prefix="/api/ml_unsupervised", tags=["Machine Learning No Supervisado"])
 app.include_router(dw_etl.router_dw, prefix="/api/dw", tags=["Data Warehouse"])
+
 # Crear tablas
 @app.on_event("startup")
 def crear_tablas():
     Base.metadata.create_all(bind=engine)
 
+    with engine.connect() as conn:
+        with open("app/utils/dw_schema.sql", "r", encoding="utf-8") as f:
+            sql_commands = f.read()
+        for command in sql_commands.split(";"):
+            if command.strip():
+                conn.execute(text(command))
+        conn.commit()
+
+    print("✅ Tablas del DW creadas correctamente.")
 
 
-
-
-with engine.connect() as conn:
-    # Abrir el archivo en UTF-8
-    with open("app/utils/dw_schema.sql", "r", encoding="utf-8") as f:
-        sql_commands = f.read()
-    for command in sql_commands.split(";"):
-        if command.strip():
-            conn.execute(text(command))
-    conn.commit()
-
-print("✅ Tablas del DW creadas correctamente.")
+# -------------------------------
+# ✅ BLOQUE NECESARIO PARA RENDER
+# -------------------------------
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=port,
+        reload=False
+    )

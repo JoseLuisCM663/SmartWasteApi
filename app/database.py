@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker, Session
 # Cargar variables de entorno
 load_dotenv()
 
+
 # Datos de conexión
 DB_USERNAME = os.getenv("DB_USERNAME")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
