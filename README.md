@@ -73,6 +73,7 @@ ALGORITHM=HS256
 
 1. Crear base de datos:
 
+
 ```sql
 CREATE DATABASE smartwaste;
 ```
